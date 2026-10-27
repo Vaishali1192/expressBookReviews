@@ -62,35 +62,53 @@ public_users.get('/isbn/:isbn', async (req, res) => {
 
   
 // Get book details based on author
-public_users.get('/author/:author',function (req, res) {
-    const author = req.params.author;
-    const bookKeys = Object.keys(books);
-    const matchingBooks = [];
 
-    bookKeys.forEach((key) => {
-        if (books[key].author.toLowerCase() === author.toLowerCase()) {
-            matchingBooks.push(books[key]);
-        }
-    });
+ // Get book details based on author using async/await
+public_users.get('/author/:author', async (req, res) => {
+    try {
+        const author = req.params.author;
 
-    return res.json(matchingBooks);
+        // Retrieve matching books asynchronously
+        const matchingBooks = await Promise.resolve(
+            Object.keys(books)
+                .filter(key =>
+                    books[key].author.toLowerCase() === author.toLowerCase()
+                )
+                .map(key => books[key])
+        );
 
+        return res.status(200).json(matchingBooks);
+    } catch (error) {
+        return res.status(500).json({
+            message: "Error retrieving books by author"
+        });
+    }
 });
+
 
 // Get all books based on title
-public_users.get('/title/:title',function (req, res) {
-    const title = req.params.title;
-    const bookKeys = Object.keys(books);
-    const matchingBooks = [];
 
-    bookKeys.forEach((key) => {
-        if (books[key].title.toLowerCase() === title.toLowerCase()) {
-            matchingBooks.push(books[key]);
-        }
-    });
+ // Get book details based on title using async/await
+public_users.get('/title/:title', async (req, res) => {
+    try {
+        const title = req.params.title;
 
-    return res.json(matchingBooks);
+        const matchingBooks = await Promise.resolve(
+            Object.keys(books)
+                .filter(key =>
+                    books[key].title.toLowerCase() === title.toLowerCase()
+                )
+                .map(key => books[key])
+        );
+
+        return res.status(200).json(matchingBooks);
+    } catch (error) {
+        return res.status(500).json({
+            message: "Error retrieving books by title"
+        });
+    }
 });
+
 
 //  Get book review
 public_users.get('/review/:isbn',function (req, res) {
