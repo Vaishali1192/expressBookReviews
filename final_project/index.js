@@ -1,4 +1,5 @@
 const express = require('express');
+const books = require('./router/booksdb.js');
 const jwt = require('jsonwebtoken');
 const session = require('express-session')
 const customer_routes = require('./router/auth_users.js').authenticated;
@@ -109,6 +110,10 @@ app.post("/register", (req, res) => {
 const PORT =5000;
 
 app.use("/customer", customer_routes);
+// Internal data endpoint used by Axios in general.js
+app.get('/internal/books', (req, res) => {
+    return res.status(200).json(books);
+});
 app.use("/", genl_routes);
 
 app.listen(PORT,()=>console.log("Server is running"));
